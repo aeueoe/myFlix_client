@@ -7,21 +7,22 @@ export const MainView = () => {
   const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
-    fetch("https://movieapi-aeueoes-projects.vercel.app/movies")
-      .then((response) => response.json())
-      .then((movies) => {
-        const moviesApi = movies.map((movie) => {
-          return {
-            id: movie._id,
-            title: movie.title,
-            description: movie.description,
-            imagePath: movie.imagePath,
-            genre: movie.genre,
-            director: movie.director,
-          };
-        });
-        setMovies(moviesApi);
-      });
+    (async () =>
+      fetch("https://movieapi-aeueoes-projects.vercel.app/movies")
+        .then((response) => response.json())
+        .then((movies) => {
+          const moviesApi = movies.map((movie) => {
+            return {
+              id: movie._id,
+              title: movie.Title,
+              description: movie.Description,
+              imagePath: movie.ImagePath,
+              genre: movie.Genre,
+              director: movie.Director,
+            };
+          });
+          setMovies(moviesApi);
+        }))();
   }, []);
 
   if (selectedMovie) {
