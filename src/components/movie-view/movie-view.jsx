@@ -27,16 +27,20 @@ export const MovieView = ({ movie, onBackClick }) => {
         <span>{movie.ReleaseYear}</span>
       </div>
       <div>
-        <span>Rating IMDb: </span>
-        <span>{movie.RatingIMDb}</span>
+        <span>IMDb Rating: </span>
+        <span>{movie.IMDb_Rating}</span>
+      </div>
+      <div>
+        <span>Rotten Tomatoes Rating: </span>
+        <span>{movie.RottenTomatoesRating}</span>
       </div>
       <div>
         <span>Cast: </span>
         <span>
-          {movie.Cast.map((cast, index) => (
+          {movie.Actors.map((actor, index) => (
             <div key={index}>
               <span>
-                {cast.Name} as {cast.Character}
+                {actor.Name} as {actor.Character}
               </span>
             </div>
           ))}
