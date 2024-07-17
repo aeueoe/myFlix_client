@@ -3,6 +3,7 @@ import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+import { Row, Col } from "react-bootstrap";
 
 export const MainView = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -44,26 +45,31 @@ export const MainView = () => {
 
   if (!user) {
     return (
-      <>
-        Login
-        <LoginView
-          onLoggedIn={(user, token) => {
-            setUser(user);
-            setToken(token);
-          }}
-        />
-        Sign Up
-        <SignupView />
-      </>
+      <Row className="justify-content-md-center">
+        <Col md={5}>
+          <LoginView
+            onLoggedIn={(user, token) => {
+              setUser(user);
+              setToken(token);
+            }}
+          />
+          Sign Up
+          <SignupView />
+        </Col>
+      </Row>
     );
   }
 
   if (selectedMovie) {
     return (
-      <MovieView
-        movie={selectedMovie}
-        onBackClick={() => setSelectedMovie(null)}
-      />
+      <Row className="justify-content-md-center">
+        <Col md={8}>
+          <MovieView
+            movie={selectedMovie}
+            onBackClick={() => setSelectedMovie(null)}
+          />
+        </Col>
+      </Row>
     );
   }
   if (movies.length === 0) {
@@ -82,18 +88,21 @@ export const MainView = () => {
       </>
     );
   }
-
   return (
-    <div>
-      {movies.map((movie) => (
-        <MovieCard
-          key={movie.id}
-          movie={movie}
-          onMovieClick={() => {
-            setSelectedMovie(movie);
-          }}
-        />
-      ))}
+    <>
+      <Row>
+        {movies.map((movie) => (
+          <Col className="mb-4">
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              onMovieClick={() => {
+                setSelectedMovie(movie);
+              }}
+            />
+          </Col>
+        ))}
+      </Row>
       <button
         onClick={() => {
           setUser(null);
@@ -103,6 +112,6 @@ export const MainView = () => {
       >
         Logout
       </button>
-    </div>
+    </>
   );
 };
