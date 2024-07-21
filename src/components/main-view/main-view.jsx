@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react";
-import { MovieCard } from "../movie-card/movie-card";
-import { MovieView } from "../movie-view/movie-view";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+import { ProfileView } from "../profile-view/profile-view";
+import { EditProfile } from "../profile-view/edit-profile";
+import { MovieView } from "../movie-view/movie-view";
+import { MoviesList } from "../movies-list/movies-list";
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 import { Row, Col } from "react-bootstrap";
 
 export const MainView = () => {
@@ -11,7 +15,13 @@ export const MainView = () => {
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
   const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    setToken(null);
+  };
 
   useEffect(() => {
     if (!token) return;
@@ -25,93 +35,103 @@ export const MainView = () => {
             },
           }
         );
-        const movies = await response.json();
-        const moviesApi = movies.map((movie) => {
-          return {
-            id: movie._id,
-            title: movie.Title,
-            description: movie.Description,
-            imagePath: movie.ImagePath,
-            genre: movie.Genre,
-            director: movie.Director,
-          };
-        });
+        const data = await response.json();
+
+        const moviesApi = data.map((movie) => ({
+          id: movie._id.$oid,
+          title: movie.Title,
+          description: movie.description,
+          countryOfOrigin: movie.countryOfOrigin,
+          imagePath: movie.imagePath,
+          featured: movie.featured,
+          releaseYear: movie.releaseYear,
+          iMDb_Rating: movie.iMDb_Rating,
+          rottenTomatoesRating: movie.rottenTomatoesRating,
+          runtime: movie.runtime,
+          language: movie.language,
+          genre: {
+            name: movie.genre.name,
+            description: movie.genre.description,
+          },
+          director: {
+            name: movie.Director.Name,
+          },
+          actors: movie.actors.map((actor) => ({
+            actor: actor.name,
+            character: actor.character,
+          })),
+          awards: movie.awards
+            ? movie.awards.map((award) => ({
+                name: award.name,
+                year: award.year,
+                wins: award.wins,
+                nominations: award.nominations,
+                description: award.description,
+              }))
+            : [],
+        }));
+
         setMovies(moviesApi);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching movies:", error);
       }
     })();
   }, [token]);
 
-  if (!user) {
-    return (
-      <Row className="justify-content-md-center">
-        <Col md={5}>
-          <LoginView
-            onLoggedIn={(user, token) => {
-              setUser(user);
-              setToken(token);
-            }}
-          />
-          Sign Up
-          <SignupView />
-        </Col>
-      </Row>
-    );
-  }
-
-  if (selectedMovie) {
-    return (
-      <Row className="justify-content-md-center">
-        <Col md={8}>
-          <MovieView
-            movie={selectedMovie}
-            onBackClick={() => setSelectedMovie(null)}
-          />
-        </Col>
-      </Row>
-    );
-  }
-  if (movies.length === 0) {
-    return (
-      <>
-        <div>The list is empty</div>
-        <button
-          onClick={() => {
-            setUser(null);
-            setToken(null);
-            localStorage.clear();
-          }}
-        >
-          Logout
-        </button>
-      </>
-    );
-  }
   return (
-    <>
+    <BrowserRouter>
+      <NavigationBar user={user} onLoggedOut={handleLogout} />
       <Row>
-        {movies.map((movie) => (
-          <Col className="mb-4">
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-              onMovieClick={() => {
-                setSelectedMovie(movie);
-              }}
+        <Col>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div>
+                  {!user && (
+                    <LoginView
+                      onLoggedIn={(user, token) => {
+                        setUser(user);
+                        setToken(token);
+                      }}
+                    />
+                  )}
+                  {user && <MoviesList movies={movies} />}
+                </div>
+              }
             />
-          </Col>
-        ))}
+            <Route
+              path="/login"
+              element={
+                <LoginView
+                  onLoggedIn={(user, token) => {
+                    setUser(user);
+                    setToken(token);
+                  }}
+                />
+              }
+            />
+            <Route path="/signup" element={<SignupView />} />
+            <Route
+              path="/users/:Username"
+              element={<ProfileView user={user} token={token} />}
+            />
+            <Route
+              path="/edit-profile"
+              element={<EditProfile user={user} token={token} />}
+            />
+            <Route path="/movies" element={<MoviesList movies={movies} />} />
+            <Route
+              path="/movies/:title"
+              element={
+                <MovieView
+                  movie={movies.find((movie) => movie.title === ":title")}
+                />
+              }
+            />
+          </Routes>
+        </Col>
       </Row>
-      <button
-        onClick={() => {
-          setUser(null);
-          setToken(null);
-          localStorage.clear();
-        }}
-      >
-        Logout
-      </button>
-    </>
+    </BrowserRouter>
   );
 };

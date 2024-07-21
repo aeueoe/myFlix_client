@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 export const SignupView = () => {
   const [username, setUsername] = useState("");
@@ -7,6 +8,8 @@ export const SignupView = () => {
   const [email, setEmail] = useState("");
   const [birthday, setBirthday] = useState("");
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,12 +33,15 @@ export const SignupView = () => {
 
       if (response.ok) {
         alert("Signup successful");
-        window.location.reload();
+        navigate("/movies", { replace: true }); 
       } else {
-        setError("Signup failed");
+        const errorData = await response.json();
+        console.error("Signup failed:", errorData);
+        setError(errorData.message || "Signup failed. Please try again.");
       }
     } catch (error) {
-      setError("Something went wrong");
+      console.error("Something went wrong:", error);
+      setError("Something went wrong. Please try again.");
     }
   };
 
@@ -76,11 +82,19 @@ export const SignupView = () => {
           type="date"
           value={birthday}
           onChange={(e) => setBirthday(e.target.value)}
-          required
         />
       </Form.Group>
       <Button type="submit" variant="primary">
         Sign Up
+      </Button>
+      {error && <div className="error">{error}</div>}
+      <div>Already a member? Log in here</div>
+      <Button
+        className="login-btn"
+        variant="outline-primary"
+        onClick={() => navigate("/login")}
+      >
+        Login
       </Button>
     </Form>
   );
