@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,6 +33,8 @@ export const LoginView = ({ onLoggedIn }) => {
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
         onLoggedIn(data.user, data.token);
+        alert("Login successful");
+        navigate("/movies", { replace: true });
       } else {
         setError("No such user");
       }
@@ -61,8 +66,17 @@ export const LoginView = ({ onLoggedIn }) => {
           required
         />
       </Form.Group>
-      <Button type="submit" variant="primary">
-        Login
+      <Button type="submit">Login</Button>
+
+      {error && <div className="error">{error}</div>}
+
+      <div>New here? Sign up now!</div>
+      <Button
+        className="signup-btn"
+        variant="outline-primary"
+        onClick={() => navigate("/signup")}
+      >
+        Signup
       </Button>
     </Form>
   );
