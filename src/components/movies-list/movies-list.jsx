@@ -12,6 +12,10 @@ export const MoviesList = ({ movies }) => {
     navigate(`/movies/${movie.title}`, { state: { movie } });
   };
 
+  const handleFavorite = (movieTitle, isAdding) => {
+    console.log(`Favorite ${isAdding ? "added" : "removed"}: ${movieTitle}`);
+  };
+
   const showMoreMovies = () => {
     setVisibleMovies((prevVisible) => prevVisible + 4);
   };
@@ -22,7 +26,11 @@ export const MoviesList = ({ movies }) => {
       <Row xs={1} md={2} lg={3} xl={4} className="g-4">
         {movies.slice(0, visibleMovies).map((movie) => (
           <Col key={movie.title}>
-            <MovieCard movie={movie} onMovieClick={handleMovieClick} />
+            <MovieCard
+              movie={movie}
+              onMovieClick={handleMovieClick}
+              onFavorite={handleFavorite}
+            />
           </Col>
         ))}
       </Row>

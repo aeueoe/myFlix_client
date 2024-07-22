@@ -33,10 +33,9 @@ export const LoginView = ({ onLoggedIn }) => {
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
         onLoggedIn(data.user, data.token);
-        alert("Login successful");
         navigate("/movies", { replace: true });
       } else {
-        setError("No such user");
+        setError("Incorrect username or password");
       }
     } catch (error) {
       setError("Something went wrong");

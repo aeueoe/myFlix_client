@@ -57,19 +57,14 @@ export const EditProfile = ({ user, token }) => {
     );
 
     if (response) {
-      fetch(
-        `https://movieapi-aeueoes-projects.vercel.app/users/${encodeURIComponent(
-          user.Username
-        )}`,
-        {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
+      fetch(`https://movieapi-aeueoes-projects.vercel.app/users/${Username}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
         .then((response) => {
           if (response.ok) {
-            alert("Account deleted successfully");
-            navigate("/");
+            alert("Account deleted");
+            navigate("/login");
           } else {
             alert("Failed to delete account");
           }

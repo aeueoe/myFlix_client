@@ -33,7 +33,7 @@ export const SignupView = () => {
 
       if (response.ok) {
         alert("Signup successful");
-        navigate("/movies", { replace: true }); 
+        navigate("/login", { replace: true });
       } else {
         const errorData = await response.json();
         console.error("Signup failed:", errorData);

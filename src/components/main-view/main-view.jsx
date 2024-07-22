@@ -6,6 +6,8 @@ import { ProfileView } from "../profile-view/profile-view";
 import { EditProfile } from "../profile-view/edit-profile";
 import { MovieView } from "../movie-view/movie-view";
 import { MoviesList } from "../movies-list/movies-list";
+import { MovieCard } from "../movie-card/movie-card";
+import { DirectorView } from "../director-view/director-view";
 import { NavigationBar } from "../navigation-bar/navigation-bar";
 import { Row, Col } from "react-bootstrap";
 
@@ -21,6 +23,16 @@ export const MainView = () => {
     localStorage.removeItem("token");
     setUser(null);
     setToken(null);
+  };
+
+  const handleFavorite = (movieTitle, isAdding) => {
+    const updatedUser = {
+      ...user,
+      FavoriteMovies: isAdding
+        ? [...user.FavoriteMovies, movieTitle]
+        : user.FavoriteMovies.filter((title) => title !== movieTitle),
+    };
+    setUser(updatedUser);
   };
 
   useEffect(() => {
@@ -87,17 +99,15 @@ export const MainView = () => {
             <Route
               path="/"
               element={
-                <div>
-                  {!user && (
-                    <LoginView
-                      onLoggedIn={(user, token) => {
-                        setUser(user);
-                        setToken(token);
-                      }}
-                    />
+                <>
+                  {!user ? (
+                    <Navigate to="/login" replace />
+                  ) : movies.length === 0 ? (
+                    <Col>The list is empty!</Col>
+                  ) : (
+                    <MoviesList movies={movies} />
                   )}
-                  {user && <MoviesList movies={movies} />}
-                </div>
+                </>
               }
             />
             <Route
@@ -114,13 +124,36 @@ export const MainView = () => {
             <Route path="/signup" element={<SignupView />} />
             <Route
               path="/users/:Username"
-              element={<ProfileView user={user} token={token} />}
+              element={
+                <ProfileView
+                  user={user}
+                  token={token}
+                  movies={movies}
+                  onLogout={handleLogout}
+                />
+              }
             />
             <Route
               path="/edit-profile"
               element={<EditProfile user={user} token={token} />}
             />
-            <Route path="/movies" element={<MoviesList movies={movies} />} />
+            <Route
+              path="/movies"
+              element={
+                <MoviesList movies={movies} onFavorite={handleFavorite} />
+              }
+            />
+            <Route
+              path="/movies"
+              element={
+                <MovieCard
+                  movies={movies}
+                  user={user}
+                  token={token}
+                  onFavorite={handleFavorite}
+                />
+              }
+            />
             <Route
               path="/movies/:title"
               element={
@@ -128,6 +161,10 @@ export const MainView = () => {
                   movie={movies.find((movie) => movie.title === ":title")}
                 />
               }
+            />
+            <Route
+              path="/directors/:directorName"
+              element={<DirectorView token={token} />}
             />
           </Routes>
         </Col>

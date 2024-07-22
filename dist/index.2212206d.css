@@ -1,12 +1,35 @@
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap";
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap";
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap";
+.movie-card .bi-heart {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.card img {
+  object-fit: contain;
+  max-height: 200px;
+}
+
+.card-body {
+  flex-direction: column;
+  justify-content: space-between;
+  display: flex;
+}
+
 .back-btn {
   color: #fff;
   background-color: #8a2be2;
   border: none;
   border-radius: 5px;
   padding: 4px 12px;
+}
+
+body {
+  color: #333;
+  background-color: #fff;
+  font-family: Poppins, sans-serif;
 }
 
 .row .col {
@@ -13371,11 +13394,5 @@ textarea.form-control-lg {
   .d-print-none {
     display: none !important;
   }
-}
-
-body {
-  color: #333;
-  background-color: #fff;
-  font-family: Poppins, sans-serif;
 }
 /*# sourceMappingURL=index.2212206d.css.map */

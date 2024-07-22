@@ -4,59 +4,67 @@ import { Container, Row, Col, Image } from "react-bootstrap";
 import PropTypes from "prop-types";
 import "./movie-view.scss";
 
-export const MovieView = () => {
+export const MovieView = ({ movie }) => {
   const location = useLocation();
-  const movie = location.state.movie;
+  const movieData = movie || location.state.movie; // Use prop or location state
+
+  if (!movieData) {
+    return <p>Loading...</p>; // Handle case where movie data is not available
+  }
 
   return (
     <Container className="movie-view">
       <Row>
         <Col md={4}>
           <Image
-            src={movie.imagePath}
-            alt={`${movie.title} poster`}
+            src={movieData.imagePath}
+            alt={`${movieData.title} poster`}
             className="w-100"
           />
         </Col>
         <Col md={8}>
-          <h1>{movie.title}</h1>
+          <h1>{movieData.title}</h1>
           <p>
-            <strong>Description:</strong> {movie.description}
+            <strong>Description:</strong> {movieData.description}
           </p>
           <p>
-            <strong>Genre:</strong> {movie.genre.name}
+            <strong>Genre:</strong> {movieData.genre.name}
           </p>
           <p>
             <strong>Director:</strong>{" "}
-            <Link to={`/directors/${movie.director.name}`}>
-              {movie.director.name}
+            <Link
+              to={`/directors/${movieData.director.name}`}
+              state={{ director: movieData.director }}
+            >
+              {movieData.director.name}
             </Link>
           </p>
           <p>
-            <strong>Country of Origin:</strong> {movie.countryOfOrigin}
+            <strong>Country of Origin:</strong> {movieData.countryOfOrigin}
           </p>
           <p>
-            <strong>Release Year:</strong> {movie.releaseYear}
+            <strong>Release Year:</strong> {movieData.releaseYear}
           </p>
           <p>
-            <strong>IMDb Rating:</strong> {movie.iMDb_Rating}
+            <strong>IMDb Rating:</strong> {movieData.iMDb_Rating}
           </p>
           <p>
             <strong>Rotten Tomatoes Rating:</strong>{" "}
-            {movie.rottenTomatoesRating}
+            {movieData.rottenTomatoesRating}
           </p>
           <p>
-            <strong>Runtime:</strong> {movie.runtime}
+            <strong>Runtime:</strong> {movieData.runtime}
           </p>
           <p>
-            <strong>Language:</strong> {movie.language}
+            <strong>Language:</strong> {movieData.language}
           </p>
           <p>
             <strong>Cast:</strong>
             <ul>
-              {movie.actors.map((actor) => (
-                <li key={actor.name}>
-                  {actor.name} as {actor.character}
+              {movieData.actors.map((actor, index) => (
+                <li key={index}>
+                  <Link to={`/actors/${actor.name}`}>{actor.name}</Link> as{" "}
+                  {actor.character}
                 </li>
               ))}
             </ul>
@@ -64,12 +72,12 @@ export const MovieView = () => {
           <p>
             <strong>Awards:</strong>
             <ul>
-              {movie.awards.map((award) => (
+              {movieData.awards.map((award) => (
                 <li key={award.name}>
                   {award.name} ({award.year}) - {award.wins} wins,{" "}
                   {award.nominations} nominations
                   <br />
-                  <p>{award.description}</p>
+                  <span>{award.description}</span>
                 </li>
               ))}
             </ul>
@@ -86,15 +94,15 @@ export const MovieView = () => {
 MovieView.propTypes = {
   movie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    Title: PropTypes.string.isRequired,
-    Description: PropTypes.string.isRequired,
-    ImagePath: PropTypes.string.isRequired,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
-      Description: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    imagePath: PropTypes.string.isRequired,
+    genre: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
     }).isRequired,
-    Director: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
+    director: PropTypes.shape({
+      name: PropTypes.string.isRequired,
     }).isRequired,
     actors: PropTypes.arrayOf(
       PropTypes.shape({
@@ -102,11 +110,11 @@ MovieView.propTypes = {
         character: PropTypes.string.isRequired,
       })
     ).isRequired,
-    CountryOfOrigin: PropTypes.string.isRequired,
-    ReleaseYear: PropTypes.number.isRequired,
-    IMDb_Rating: PropTypes.string.isRequired,
-    RottenTomatoesRating: PropTypes.string.isRequired,
-    Runtime: PropTypes.string.isRequired,
-    Language: PropTypes.string.isRequired,
-  }).isRequired,
+    countryOfOrigin: PropTypes.string.isRequired,
+    releaseYear: PropTypes.number.isRequired,
+    iMDb_Rating: PropTypes.string.isRequired,
+    rottenTomatoesRating: PropTypes.string.isRequired,
+    runtime: PropTypes.string.isRequired,
+    language: PropTypes.string.isRequired,
+  }),
 };
