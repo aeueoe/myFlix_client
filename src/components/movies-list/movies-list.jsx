@@ -1,40 +1,45 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useCallback } from "react";
+import { useSelector } from "react-redux";
 import { Row, Col, Button } from "react-bootstrap";
 import { MovieCard } from "../movie-card/movie-card";
-import "./movies-list.scss";
+import { MoviesFilter } from "../movies-filter/movies-filter";
 
-export const MoviesList = ({ movies }) => {
+export const MoviesList = () => {
+  const movies = useSelector((state) => state.movies.list);
+  const filter = useSelector((state) => state.movies.filter)
+    .trim()
+    .toLowerCase();
+
+  const filteredMovies = movies.filter(
+    (movie) =>
+      movie.title.toLowerCase().includes(filter) ||
+      movie.genre.toLowerCase().includes(filter)
+  );
+
   const [visibleMovies, setVisibleMovies] = useState(4);
-  const navigate = useNavigate();
-
-  const handleMovieClick = (movie) => {
-    navigate(`/movies/${movie.title}`, { state: { movie } });
-  };
-
-  const handleFavorite = (movieTitle, isAdding) => {
-    console.log(`Favorite ${isAdding ? "added" : "removed"}: ${movieTitle}`);
-  };
-
-  const showMoreMovies = () => {
+  const showMoreMovies = useCallback(() => {
     setVisibleMovies((prevVisible) => prevVisible + 4);
-  };
+  }, [setVisibleMovies]);
+
+  const handleMovieClick = (movie) => {};
 
   return (
     <>
-      <Row className="mb-3"></Row>
-      <Row xs={1} md={2} lg={3} xl={4} className="g-4">
-        {movies.slice(0, visibleMovies).map((movie) => (
-          <Col key={movie.title}>
-            <MovieCard
-              movie={movie}
-              onMovieClick={handleMovieClick}
-              onFavorite={handleFavorite}
-            />
-          </Col>
-        ))}
+      <Row>
+        <MoviesFilter />
       </Row>
-      {movies.length > visibleMovies && (
+      <Row className="movie-list justify-content-md-center">
+        {movies.length === 0 ? (
+          <Col>The list is empty!</Col>
+        ) : (
+          filteredMovies.slice(0, visibleMovies).map((movie) => (
+            <Col key={movie.id}>
+              <MovieCard movie={movie} onMovieClick={handleMovieClick} />
+            </Col>
+          ))
+        )}
+      </Row>
+      {filteredMovies.length > visibleMovies && (
         <div className="text-center mt-5">
           <Button onClick={showMoreMovies}>Show more</Button>
         </div>
