@@ -1,25 +1,76 @@
-import React from "react";
-import { useLocation, Link } from "react-router-dom";
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { React, useState} from "react";
 import PropTypes from "prop-types";
-import "./movie-view.scss";
+import { Link } from "react-router-dom";
+import { Container, Row, Col, Image, Button, ToggleButton} from "react-bootstrap";
+import { useSelector } from "react-redux";
+import {useParams} from "react-router";
+import {useDispatch} from "react-redux";
+import {setUserProfile, setToken} from "../../redux/reducer/user";
 
-export const MovieView = () => {
-  const location = useLocation();
-  const movie = location.state.movie;
+
+
+export const MovieView = ({ movies }) => {
+  let user = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem('token');
+  const { movieId } = useParams();
+  const movie = movies.find((m) => m.id === movieId);
+
+    const [checked, setChecked] = useState(
+    user.favorites.indexOf(movie.id) > -1 ? true : false
+  );
+
+  console.log(user.favorites.indexOf(movie.id));
+
+  console.log(checked);
+
+
+   //Delete Movie From User's Favorites List
+  const delFav = () => {
+    {
+      fetch(
+        `https://movieapi-aeueoes-projects.vercel.app/users/${user.username}/favoriteMovies/${movie.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          method: 'DELETE',
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          localStorage.setItem('user', JSON.stringify(data));
+        });
+    }
+  };
+
+  //Add Movie to User's Favorites List
+  const addFav = () => {
+    {
+      fetch(
+        `https://movieapi-aeueoes-projects.vercel.app/users/${user.username}/favoriteMovies/${movie.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          method: 'PUT',
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          localStorage.setItem('user', JSON.stringify(data));
+        });
+    }
+  };
+
 
   return (
     <Container className="movie-view">
-      <Row>
-        <Col md={4}>
+      <Row className="justify-content-center">
+        <Col md={6}>
           <Image
             src={movie.imagePath}
             alt={`${movie.title} poster`}
-            className="w-100"
+            className="img-fluid"
           />
         </Col>
-        <Col md={8}>
-          <h1>{movie.title}</h1>
+        <Col md={6}>
+          <h2>{movieData.title}</h2>
           <p>
             <strong>Description:</strong> {movie.description}
           </p>
@@ -28,8 +79,11 @@ export const MovieView = () => {
           </p>
           <p>
             <strong>Director:</strong>{" "}
-            <Link to={`/directors/${movie.director.name}`}>
-              {movie.director.name}
+            <Link
+              to={`/directors/${movie.director.name}`}
+              state={{ director: movie.director }}
+            >
+              {movieData.director.name}
             </Link>
           </p>
           <p>
@@ -39,11 +93,10 @@ export const MovieView = () => {
             <strong>Release Year:</strong> {movie.releaseYear}
           </p>
           <p>
-            <strong>IMDb Rating:</strong> {movie.iMDb_Rating}
+            <strong>IMDb:</strong> {movie.iMDb_Rating}
           </p>
           <p>
-            <strong>Rotten Tomatoes Rating:</strong>{" "}
-            {movie.rottenTomatoesRating}
+            <strong>Rotten Tomatoes :</strong> {movie.rottenTomatoesRating}
           </p>
           <p>
             <strong>Runtime:</strong> {movie.runtime}
@@ -54,9 +107,10 @@ export const MovieView = () => {
           <p>
             <strong>Cast:</strong>
             <ul>
-              {movie.actors.map((actor) => (
-                <li key={actor.name}>
-                  {actor.name} as {actor.character}
+              {movie.actors.map((actor, index) => (
+                <li key={index}>
+                  <Link to={`/actors/${actor.name}`}>{actor.name}</Link> as{" "}
+                  {actor.character}
                 </li>
               ))}
             </ul>
@@ -69,11 +123,31 @@ export const MovieView = () => {
                   {award.name} ({award.year}) - {award.wins} wins,{" "}
                   {award.nominations} nominations
                   <br />
-                  <p>{award.description}</p>
+                  <span>{award.description}</span>
                 </li>
               ))}
             </ul>
           </p>
+              <ToggleButton
+                id={movie.id}
+                className="mb-2 movie-view--favorites-button"
+                type="checkbox"
+                variant="outline-primary"
+                checked={checked}
+                value={checked}
+                onChange={() => {
+                  setChecked(!checked);
+                  if (!user.favorites) {
+                    return;
+                  } else if (user.favorites.indexOf(movie.id) > -1) {
+                    delFav();
+                  } else {
+                    addFav();
+                  }
+                }}
+              >
+                Favorite
+              </ToggleButton>
           <Link to="/" className="mt-3 d-inline-block">
             Back
           </Link>
@@ -86,15 +160,15 @@ export const MovieView = () => {
 MovieView.propTypes = {
   movie: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    Title: PropTypes.string.isRequired,
-    Description: PropTypes.string.isRequired,
-    ImagePath: PropTypes.string.isRequired,
-    Genre: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
-      Description: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    imagePath: PropTypes.string.isRequired,
+    genre: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
     }).isRequired,
-    Director: PropTypes.shape({
-      Name: PropTypes.string.isRequired,
+    director: PropTypes.shape({
+      name: PropTypes.string.isRequired,
     }).isRequired,
     actors: PropTypes.arrayOf(
       PropTypes.shape({
@@ -102,11 +176,11 @@ MovieView.propTypes = {
         character: PropTypes.string.isRequired,
       })
     ).isRequired,
-    CountryOfOrigin: PropTypes.string.isRequired,
-    ReleaseYear: PropTypes.number.isRequired,
-    IMDb_Rating: PropTypes.string.isRequired,
-    RottenTomatoesRating: PropTypes.string.isRequired,
-    Runtime: PropTypes.string.isRequired,
-    Language: PropTypes.string.isRequired,
-  }).isRequired,
+    countryOfOrigin: PropTypes.string.isRequired,
+    releaseYear: PropTypes.number.isRequired,
+    iMDb_Rating: PropTypes.string.isRequired,
+    rottenTomatoesRating: PropTypes.string.isRequired,
+    runtime: PropTypes.string.isRequired,
+    language: PropTypes.string.isRequired,
+  }),
 };

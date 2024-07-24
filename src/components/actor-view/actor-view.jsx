@@ -3,17 +3,17 @@ import { Container, Row, Col } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-export const DirectorView = ({ token }) => {
-  const { directorName } = useParams();
+export const ActorView = ({ token }) => {
+  const { actorName } = useParams();
   const navigate = useNavigate();
-  const [director, setDirector] = useState(null);
+  const [actor, setActor] = useState(null);
 
   useEffect(() => {
     if (!token) return;
     (async () => {
       try {
         const response = await fetch(
-          `https://movieapi-aeueoes-projects.vercel.app/directors/${directorName}`,
+          `https://movieapi-aeueoes-projects.vercel.app/actors/${actorName}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -21,41 +21,50 @@ export const DirectorView = ({ token }) => {
           }
         );
         const data = await response.json();
-        setDirector(data);
+        setActor(data);
       } catch (error) {
-        console.error("Error fetching director:", error);
+        console.error("Error fetching actor:", error);
       }
     })();
-  }, [token, directorName]);
+  }, [token, actorName]);
 
-  if (!director) {
+  if (!actor) {
     return <div>Loading...</div>;
   }
 
   return (
-    <Container className="director-view">
+    <Container className="actor-view">
       <Row>
         <Col md={8}>
-          <h1>{director.name}</h1>
+          <h1>{actor.name}</h1>
           <p>
-            <strong>Bio:</strong> {director.bio}
+            <strong>Bio:</strong> {actor.bio}
           </p>
           <p>
-            <strong>Birth:</strong> {director.birth}
+            <strong>Birth:</strong> {actor.birth}
           </p>
-          {director.death && director.death !== "0" && (
+          {actor.death && actor.death !== "0" && (
             <p>
-              <strong>Death:</strong> {director.death}
+              <strong>Death:</strong> {actor.death}
             </p>
           )}
           <p>
-            <strong>Country:</strong> {director.country}
+            <strong>Awards:</strong>
+            <ul>
+              {actor.awards.map((award) => (
+                <li key={award.name}>
+                  {award.name} ({award.year})
+                  <br />
+                  <span>{award.description}</span>
+                </li>
+              ))}
+            </ul>
           </p>
           <p>
             <strong>Other Films:</strong>
             <ul>
-              {director.otherFilms &&
-                director.otherFilms.map((film) => <li key={film}>{film}</li>)}
+              {actor.movies &&
+                actor.movies.map((film) => <li key={film}>{film}</li>)}
             </ul>
           </p>
           <button onClick={() => navigate(-1)} className="mt-3 d-inline-block">
@@ -67,6 +76,6 @@ export const DirectorView = ({ token }) => {
   );
 };
 
-DirectorView.propTypes = {
+ActorView.propTypes = {
   token: PropTypes.string.isRequired,
 };
