@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setToken, setUserProfile } from "../../redux/reducer/user";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, setToken } from "../../redux/reducer/user";
 
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const user = useSelector((state) => state.user.userObject);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const data = {
-      username: username,
-      password: password,
+      Username: username,
+      Password: password,
     };
 
     fetch("https://movieapi-aeueoes-projects.vercel.app/login", {
@@ -24,20 +27,31 @@ export const LoginView = ({ onLoggedIn }) => {
       },
       body: JSON.stringify(data),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Invalid username or password");
+        }
+        return response.json();
+      })
       .then((data) => {
-        if (data.user) {
+        // Log the response data to see its structure
+        console.log("API response:", data);
+
+        // Check if the expected fields are present in the response
+        if (data.user && data.token) {
           localStorage.setItem("user", JSON.stringify(data.user));
           localStorage.setItem("token", data.token);
-          dispatch(setUserProfile(data.user));
+          dispatch(setUser(data.user));
           dispatch(setToken(data.token));
           onLoggedIn(data.user, data.token);
+          navigate("/movies");
         } else {
-          alert("Username or password is incorrect");
+          throw new Error("Invalid response data");
         }
       })
-      .catch((e) => {
-        alert("Something went wrong");
+      .catch((error) => {
+        setError(error.message);
+        console.error("Login Error:", error);
       });
   };
 
@@ -46,7 +60,7 @@ export const LoginView = ({ onLoggedIn }) => {
       <Row className="justify-content-center">
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formUsername">
-            <Form.Label>Username</Form.Label>
+            <Form.Label>Username:</Form.Label>
             <Form.Control
               type="text"
               value={username}
@@ -66,12 +80,14 @@ export const LoginView = ({ onLoggedIn }) => {
               required
             />
           </Form.Group>
-          <Button className="submit-btn" type="submit">
+          <Button className="submit-btn" type="submit" variant="primary">
             Login
           </Button>
-
-          {error && <div className="error">{error}</div>}
-
+          {error && (
+            <div className="error" style={{ color: "red" }}>
+              {error}
+            </div>
+          )}
           <div>New here? Sign up now!</div>
           <Button
             className="submit-btn"

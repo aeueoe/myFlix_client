@@ -7,14 +7,15 @@ const moviesSlice = createSlice({
     filter: "",
   },
   reducers: {
-    setMovies(state, action) {
+    setMovies: (state, action) => {
       state.list = action.payload;
     },
-    setFilter(state, action) {
-      state.filter = action.payload.trim().toLowerCase();
+    setFilter: (state, action) => {
+      state.filter = action.payload;
     },
   },
 });
 
 export const { setMovies, setFilter } = moviesSlice.actions;
+
 export default moviesSlice.reducer;
