@@ -2,7 +2,7 @@ import { Navbar, Container, Nav } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../img/logo.png";
 import { useSelector, useDispatch } from "react-redux";
-import { setUserProfile, setToken } from "../../redux/reducer/user";
+import { setUser, setToken } from "../../redux/reducer/user";
 
 export const NavigationBar = ({ user, onLoggedOut }) => {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export const NavigationBar = ({ user, onLoggedOut }) => {
             )}
             {user && (
               <>
-                <Nav.Link as={Link} to="/">
+                <Nav.Link as={Link} to="/movies">
                   Home
                 </Nav.Link>
                 <Nav.Link as={Link} to={`/users/${user.Username}`}>

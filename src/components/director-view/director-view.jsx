@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 export const DirectorView = ({ token }) => {
   const { directorName } = useParams();
-  const navigate = useNavigate();
   const [director, setDirector] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!token) return;
@@ -27,16 +27,15 @@ export const DirectorView = ({ token }) => {
       }
     })();
   }, [token, directorName]);
-
   if (!director) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // or a loading spinner, etc.
   }
 
   return (
     <Container className="director-view">
       <Row>
         <Col md={8}>
-          <h1>{director.name}</h1>
+          <h2>{director.name}</h2>
           <p>
             <strong>Bio:</strong> {director.bio}
           </p>
@@ -58,9 +57,14 @@ export const DirectorView = ({ token }) => {
                 director.otherFilms.map((film) => <li key={film}>{film}</li>)}
             </ul>
           </p>
-          <button onClick={() => navigate(-1)} className="mt-3 d-inline-block">
+
+          <Link
+            to="/"
+            className="mt-3 d-inline-block"
+            onClick={() => navigate(-1)}
+          >
             Back
-          </button>
+          </Link>
         </Col>
       </Row>
     </Container>
@@ -69,4 +73,13 @@ export const DirectorView = ({ token }) => {
 
 DirectorView.propTypes = {
   token: PropTypes.string.isRequired,
+  director: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    birth: PropTypes.string.isRequired,
+    death: PropTypes.string,
+    country: PropTypes.string.isRequired,
+    bio: PropTypes.string.isRequired,
+    otherFilms: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }),
 };

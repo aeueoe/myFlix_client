@@ -15,10 +15,10 @@ export const SignupView = () => {
     event.preventDefault();
 
     const data = {
-      username: username,
-      password: password,
-      email: email,
-      birth: birthday,
+      Username: username,
+      Password: password,
+      Email: email,
+      Birthday: birthday,
     };
 
     fetch("https://movieapi-aeueoes-projects.vercel.app/users", {
@@ -26,14 +26,27 @@ export const SignupView = () => {
       headers: {
         "Content-Type": "application/json",
       },
-    }).then((response) => {
-      if (response.ok) {
-        alert("Signup Successful");
-        window.location.href = "/login";
-      } else {
-        alert("Signup Failed");
-      }
-    });
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            throw new Error(errorData.errors.map((e) => e.msg).join(", "));
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.user) {
+          alert("Signup Successful");
+          navigate("/login");
+        } else {
+          setError("Signup failed. Please try again.");
+        }
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   };
 
   return (
@@ -47,7 +60,7 @@ export const SignupView = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              minLength="5"
+              minLength={5}
             />
           </Form.Group>
           <Form.Group controlId="signUpPassword">
@@ -56,7 +69,7 @@ export const SignupView = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              minLength="6"
+              minLength={6}
               required
             />
           </Form.Group>
@@ -80,7 +93,11 @@ export const SignupView = () => {
           <Button className="submit-btn" type="submit" variant="primary">
             Sign Up
           </Button>
-          {error && <div className="error">{error}</div>}
+          {error && (
+            <div className="error" style={{ color: "red" }}>
+              {error}
+            </div>
+          )}
           <div>Already a member? Log in here</div>
           <Button
             className="submit-btn"

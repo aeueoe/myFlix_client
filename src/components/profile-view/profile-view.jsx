@@ -1,149 +1,182 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button, Row, Col, Form } from "react-bootstrap";
-
+import { useDispatch, useSelector } from "react-redux";
+import PropTypes from "prop-types";
 
 export const ProfileView = ({ user }) => {
-  const [userInfo, setUserInfo] = useState("");
+  const formatDate = (timestamp) => {
+    if (!timestamp) return "";
+
+    const date = new Date(parseInt(timestamp, 10));
+    return isNaN(date.getTime()) ? "" : date.toISOString().split("T")[0]; // yyyy-mm-dd
+  };
+
+  const [email, setEmail] = useState(user?.Email || "");
+
+  const [username, setUsername] = useState(user?.Username || "");
+  const [password, setPassword] = useState("");
+  const [birthday, setBirthday] = useState(user?.Birthday);
   const storedToken = localStorage.getItem("token");
   const [token, setToken] = useState(storedToken ? storedToken : null);
-
-  const [email, setEmail] = useState(user.email);
-  const [birthday, setBirthday] = useState(user.birth);
-  const [username, setUsername] = useState(user.username);
-  const [password, setPassword] = useState(user.password);
-
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) {
-      return;
-    }
-    fetch(
-      `https://movieapi-aeueoes-projects.vercel.app/users/${user.Username}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    if (!token) return;
+
+    fetch("https://movieapi-aeueoes-projects.vercel.app/users", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((response) => response.json())
       .then((data) => {
-        const userFromApi = {
-          username: data.username,
-        };
-        setUserInfo(userFromApi);
-      });
-  }, [token]);
+        setEmail(data.Email || email);
+        setBirthday(formatDate(data.Birthday?.$date?.$numberLong) || birthday);
+        setUsername(data.Username || username);
+      })
+      .catch((error) => console.error("Error fetching user data:", error));
+  }, [token, username]);
 
-  const updateUser = (e) => {
-    e.preventDefault();
+  const updateUser = (event) => {
+    event.preventDefault();
+
     const data = {
-      username: username,
-      password: password,
-      email: email,
-      birth: birthday,
+      Username: username,
+      Password: password,
+      Email: email,
+      Birthday: birthday,
     };
 
     fetch(
       `https://movieapi-aeueoes-projects.vercel.app/users/${user.Username}`,
       {
-        headers: { Authorization: `Bearer ${token}` },
-        "Content-Type": "application/json",
-        body: JSON.stringify(data),
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
       }
-    ).then((response) => {
-      if (response.ok) {
-        alert(
-          "User Info Successfully Updated! Please Logout to See the Updated Information"
-        );
-      } else {
-        alert("User Update Failed");
-      }
-    });
-
-    const deregister = (e) => {
-      e.preventDefault();
-      let response = confirm("Are you sure, you want to delete this account?");
-      console.log(response);
-      if (response) {
-        fetch(
-          `https://movieapi-aeueoes-projects.vercel.app/users/${user.Username}`,
-          { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
-        );
-      }
-    };
-
-    return (
-      <Row>
-        <Col md={8}>
-          <div className="profile-section mb-4 p-4">
-            <h2>Hi, {user.Username}!</h2>
-                    <Form onSubmit={updateUser}>
-              <Form.Group className="mb-3">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  defaultValue={user.username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  defaultValue={user.email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Birth Date</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={birthday}
-                  onChange={(e) => setBirthday(e.target.value)}
-                />
-              </Form.Group>
-              <Button
-                className="update-user--btn"
-                variant="success"
-                type="submit"
-              >
-                Update User
-              </Button>
-              <Button
-                className="delete-user--btn"
-                variant="danger"
-                onClick={deregister}
-              >
-                Delete User
-              </Button>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    );
+    )
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((errorData) => {
+            setError(errorData.message);
+          });
+        } else {
+          dispatch(setUser({ ...user, ...data }));
+          alert("Profile updated successfully!");
+        }
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
   };
 
-  ProfileViewView.propTypes = {
-    user: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-      password: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      birth: PropTypes.string.isRequired,
+  const deregister = () => {
+    if (window.confirm("Are you sure you want to delete this account?")) {
+      fetch(
+        `https://movieapi-aeueoes-projects.vercel.app/users/${user.Username}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+        .then((response) => {
+          if (response.ok) {
+            dispatch(setUser(null));
+            dispatch(setToken(null));
+            alert("Account deleted successfully!");
+            navigate("/signup", { replace: true });
+          } else {
+            alert("Account deletion failed!");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting account:", error);
+          alert("Account deletion failed: " + error.message);
+        });
+    }
+  };
+  return (
+    <Row>
+      <Col md={8}>
+        <div className="profile-section mb-4 p-4">
+          <Form onSubmit={updateUser}>
+            <Form.Group className="mb-3">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                defaultValue={user.Username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                defaultValue={user.Email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Birthday</Form.Label>
+              <Form.Control
+                type="date"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+              />
+            </Form.Group>
+            <Button
+              className="update-user--btn"
+              variant="success"
+              type="submit"
+            >
+              Update User
+            </Button>
+            <Button
+              className="delete-user--btn"
+              variant="danger"
+              onClick={deregister}
+            >
+              Delete User
+            </Button>
+          </Form>
+        </div>
+      </Col>
+    </Row>
+  );
+};
 
-      favoriteMovies: PropTypes.array.isRequired,
+ProfileView.propTypes = {
+  user: PropTypes.shape({
+    _id: PropTypes.shape({
+      $oid: PropTypes.string.isRequired,
     }).isRequired,
-  };
+    Email: PropTypes.string.isRequired,
+    Birthday: PropTypes.shape({
+      $date: PropTypes.shape({
+        $numberLong: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
+    Username: PropTypes.string.isRequired,
+    Password: PropTypes.string.isRequired,
+    favoriteMovies: PropTypes.arrayOf(
+      PropTypes.shape({
+        $oid: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+  }).isRequired,
 };

@@ -1,14 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import movies from "./reducer/movies";
-import user from "./reducer/user";
-import token from "./reducer/token";
-import genres from "./reducer/genres";
+import moviesReducer from "../redux/reducer/movies";
+import userReducer from "../redux/reducer/user";
 
 export const store = configureStore({
-  reducer: {
-    movies: movies,
-    user: user,
-    token: token,
-    genres: genres,
-  },
+  reducer: { movies: moviesReducer, user: userReducer },
 });

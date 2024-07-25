@@ -13,7 +13,7 @@ export const ActorView = ({ token }) => {
     (async () => {
       try {
         const response = await fetch(
-          `https://movieapi-aeueoes-projects.vercel.app/actors/${actorName}`,
+          `https://movieapi-aeueoes-projects.vercel.app/actors/${actor.name}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -78,4 +78,18 @@ export const ActorView = ({ token }) => {
 
 ActorView.propTypes = {
   token: PropTypes.string.isRequired,
+  actor: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    bio: PropTypes.string.isRequired,
+    birth: PropTypes.string.isRequired,
+    death: PropTypes.string,
+    awards: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        year: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired,
+      })
+    ).isRequired,
+    movies: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }),
 };
