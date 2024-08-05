@@ -58,7 +58,7 @@ export const MoviesList = () => {
           ))}
         </Row>
         {filteredMovies.length > visibleMovies && (
-          <div className="text-center mt-3">
+          <div className="text-center mt-3 mb-3">
             <Button className="show-more" onClick={showMoreMovies}>
               Show more
             </Button>
