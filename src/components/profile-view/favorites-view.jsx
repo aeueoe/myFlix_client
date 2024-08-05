@@ -20,7 +20,7 @@ export const FavoritesView = () => {
   return (
     <Row className="favorites-view">
       <Col>
-        <h4>My Favorite Movies</h4>
+        <h3>My Favorite Movies</h3>
         <Row className="justify-content-center">
           {favoriteMovies.length === 0 ? (
             <Col>The list is empty!</Col>

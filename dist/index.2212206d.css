@@ -230,7 +230,7 @@
   cursor: pointer;
   display: block;
   position: fixed;
-  bottom: 1.8rem;
+  bottom: 1.5rem;
   right: 1rem;
 }
 
@@ -312,7 +312,7 @@
   margin-top: 5rem;
 }
 
-.favorites-view h4 {
+.favorites-view h3 {
   color: #2c3e50;
   text-align: center;
   margin-top: 2rem;
