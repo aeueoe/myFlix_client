@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row } from "react-bootstrap";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 export const SignupView = () => {
@@ -50,63 +50,74 @@ export const SignupView = () => {
   };
 
   return (
-    <Container className="login-section mb-4 p-4">
+    <Container className="auth-container">
       <Row className="justify-content-center">
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="signUpUsername">
-            <Form.Label>Username:</Form.Label>
-            <Form.Control
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              minLength={5}
-            />
-          </Form.Group>
-          <Form.Group controlId="signUpPassword">
-            <Form.Label>Password:</Form.Label>
-            <Form.Control
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              minLength={6}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="signUpEmail">
-            <Form.Label>Email:</Form.Label>
-            <Form.Control
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="signUpBirthday">
-            <Form.Label>Birthday:</Form.Label>
-            <Form.Control
-              type="date"
-              value={birthday}
-              onChange={(e) => setBirthday(e.target.value)}
-            />
-          </Form.Group>
-          <Button className="submit-btn" type="submit" variant="primary">
-            Sign Up
-          </Button>
-          {error && (
-            <div className="error" style={{ color: "red" }}>
-              {error}
+        <div
+          className="text-center mb-4"
+          style={{ fontSize: "34px", fontWeight: "bold", color: "#f39c12" }}
+        >
+          myFlix
+        </div>
+        <Col md={6} className="auth-form-container">
+          <h2 className="auth-title">Sign Up</h2>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="signUpUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                minLength={5}
+                className="auth-input"
+              />
+            </Form.Group>
+            <Form.Group controlId="signUpPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                minLength={6}
+                required
+                className="auth-input"
+              />
+            </Form.Group>
+            <Form.Group controlId="signUpEmail">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="auth-input"
+              />
+            </Form.Group>
+            <Form.Group controlId="signUpBirthday">
+              <Form.Label>Birthday</Form.Label>
+              <Form.Control
+                type="date"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+                className="auth-input"
+              />
+            </Form.Group>
+            <Button type="submit" className="auth-btn" variant="primary">
+              Sign Up
+            </Button>
+            {error && <div className="auth-error">{error}</div>}
+            <div className="auth-footer">
+              <span>Already a member?</span>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/login")}
+                className="auth-link-btn"
+              >
+                Login
+              </Button>
             </div>
-          )}
-          <div>Already a member? Log in here</div>
-          <Button
-            className="submit-btn"
-            variant="outline-primary"
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </Button>
-        </Form>
+          </Form>
+        </Col>
       </Row>
     </Container>
   );

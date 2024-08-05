@@ -14,77 +14,85 @@ export const MovieView = () => {
   const navigate = useNavigate();
 
   return (
-    <Container className="movie-view">
-      <Row className="justify-content-center">
-        <Col md={6}>
-          <Card.Img variant="top" src={movie.imagePath} alt={movie.title} />
-        </Col>
-        <Col md={6}>
-          <h2>{movie.title}</h2>
-          <p>
-            <strong>Description:</strong> {movie.description}
-          </p>
-          <p>
-            <strong>Genre:</strong> {movie.genre.name}
-          </p>
-          <p>
-            <strong>Director:</strong>{" "}
-            <Link to={`/directors/${movie.director.name}`}>
-              {movie.director.name}
-            </Link>
-          </p>
-
-          <p>
-            <strong>Release Year:</strong> {movie.releaseYear}
-          </p>
-          <p>
-            <strong>IMDb:</strong> {movie.iMDb_Rating}
-          </p>
-          <p>
-            <strong>Rotten Tomatoes:</strong> {movie.rottenTomatoesRating}
-          </p>
-          <p>
-            <strong>Runtime:</strong> {movie.runtime}
-          </p>
-          <p>
-            <strong>Language:</strong> {movie.language}
-          </p>
-          <p>
-            <strong>Country of Origin:</strong> {movie.countryOfOrigin}
-          </p>
-          <p>
-            <strong>Cast:</strong>
-            <ul>
-              {movie.actors.map((actor) => (
-                <li key={actor.name}>
-                  {actor.name} as {actor.character}
-                </li>
-              ))}
-            </ul>
-          </p>
-          <p>
-            <strong>Awards:</strong>
-            <ul>
-              {movie.awards.map((award) => (
-                <li key={award.name}>
-                  {award.name} ({award.year}) - {award.wins} wins,{" "}
-                  {award.nominations} nominations
-                  <br />
-                  <span>{award.description}</span>
-                </li>
-              ))}
-            </ul>
-          </p>
-          <Link
-            to="/"
-            className="mt-3 d-inline-block"
-            onClick={() => navigate(-1)}
-          >
-            Back
-          </Link>
-        </Col>
-      </Row>
-    </Container>
+    <div className="view-container movie-view">
+      <Container>
+        <Row className="justify-content-center">
+          <Col md={6}>
+            <Card.Img
+              variant="top"
+              className="movie-image"
+              src={movie.imagePath}
+              alt={movie.title}
+            />
+          </Col>
+          <Col md={6}>
+            <div className="movie-details">
+              <h2>{movie.title}</h2>
+              <p>
+                <strong>Description:</strong> {movie.description}
+              </p>
+              <p>
+                <strong>Genre:</strong>{" "}
+                <Link to={`/genres/${movie.genre.name}`}>
+                  {movie.genre.name}
+                </Link>
+              </p>
+              <p>
+                <strong>Director:</strong>{" "}
+                <Link to={`/directors/${movie.director.name}`}>
+                  {movie.director.name}
+                </Link>
+              </p>
+              <p>
+                <strong>Release Year:</strong> {movie.releaseYear}
+              </p>
+              <p>
+                <strong>IMDb:</strong> {movie.iMDb_Rating}
+              </p>
+              <p>
+                <strong>Rotten Tomatoes:</strong> {movie.rottenTomatoesRating}
+              </p>
+              <p>
+                <strong>Runtime:</strong> {movie.runtime}
+              </p>
+              <p>
+                <strong>Language:</strong> {movie.language}
+              </p>
+              <p>
+                <strong>Country of Origin:</strong> {movie.countryOfOrigin}
+              </p>
+              <p>
+                <strong>Cast:</strong>
+                <ul className="cast-films">
+                  {movie.actors.map((actor) => (
+                    <li key={actor.name}>
+                      <span className="value"> {actor.name}</span> as{" "}
+                      {actor.character}
+                    </li>
+                  ))}
+                </ul>
+              </p>
+              <p>
+                <strong>Awards:</strong>
+                <ul className="awards">
+                  {movie.awards.map((award) => (
+                    <li key={award.name}>
+                      <span className="value">{award.name}</span> ({award.year})
+                      - {award.wins} wins, {award.nominations} nominations
+                      <br />
+                      <span>{award.description}</span>
+                    </li>
+                  ))}
+                </ul>
+              </p>
+              <Link to="/" className="back-link" onClick={() => navigate(-1)}>
+                Back
+              </Link>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 

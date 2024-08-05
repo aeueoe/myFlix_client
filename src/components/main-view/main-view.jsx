@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 import { useSelector, useDispatch } from "react-redux";
 import { setMovies } from "../../redux/reducer/movies";
-import { setUser, setToken } from "../../redux/reducer/user";
 
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
@@ -10,28 +11,28 @@ import { ProfileView } from "../profile-view/profile-view";
 import { MovieView } from "../movie-view/movie-view";
 import { MoviesList } from "../movies-list/movies-list";
 import { MovieCard } from "../movie-card/movie-card";
+import { GenreView } from "../movie-view/genre-view";
+import { FavoritesView } from "../profile-view/favorites-view";
 import { NavigationBar } from "../navigation-bar/navigation-bar";
 import { DirectorView } from "../director-view/director-view";
 import { Container, Row, Col } from "react-bootstrap";
 
 export const MainView = () => {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const storedToken = localStorage.getItem("token");
+
   const movies = useSelector((state) => state.movies.list);
+
+  const [user, setUser] = useState(storedUser ? storedUser : null);
+  const [token, setToken] = useState(storedToken ? storedToken : null);
+
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.userObject);
-  const token = useSelector((state) => state.user.token);
 
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const storedToken = localStorage.getItem("token");
-
-    if (storedUser) {
-      dispatch(setUser(storedUser));
-    }
-
-    if (storedToken) {
-      dispatch(setToken(storedToken));
-    }
-  }, [dispatch]);
+  const onLoggedOut = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.clear();
+  };
 
   useEffect(() => {
     if (!token) {
@@ -44,7 +45,7 @@ export const MainView = () => {
       .then((response) => response.json())
       .then((data) => {
         const moviesFromApi = data.map((movie) => ({
-          id: movie._id.$oid,
+          id: movie._id,
           title: movie.Title,
           description: movie.description,
           countryOfOrigin: movie.countryOfOrigin,
@@ -79,24 +80,28 @@ export const MainView = () => {
 
         dispatch(setMovies(moviesFromApi));
         console.log(moviesFromApi);
+
+        const genresFromApi = data.map((movie) => {
+          return { name: movie.genre.name };
+        });
       });
-  }, [token, dispatch]);
+  }, [token]);
 
   return (
     <BrowserRouter>
       <NavigationBar
         user={user}
         onLoggedOut={() => {
-          setUser(null);
-          setToken(null);
-          localStorage.clear();
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
         }}
-      />
+      ></NavigationBar>
       <Container>
         <Row className="justify-content-md-center main">
           <Routes>
             <Route
-              path="/"
+              path="/login"
               element={
                 user ? (
                   <Navigate to="/" />
@@ -104,25 +109,12 @@ export const MainView = () => {
                   <div className="login-view">
                     <LoginView
                       onLoggedIn={(user, token) => {
-                        dispatch(setUser(user));
-                        dispatch(setToken(token));
-                        localStorage.setItem("user", JSON.stringify(user));
-                        localStorage.setItem("token", token);
+                        setUser(user);
+                        setToken(token);
                       }}
                     />
                   </div>
                 )
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <LoginView
-                  onLoggedIn={(user, token) => {
-                    setUser(user);
-                    setToken(token);
-                  }}
-                />
               }
             />
             <Route
@@ -161,21 +153,16 @@ export const MainView = () => {
               element={<DirectorView token={token} />}
             />
             <Route
+              path="/genres/:genreName"
+              element={<GenreView token={token} />}
+            />
+            <Route
               path="/users/:Username"
               element={<ProfileView user={user} />}
-              element={
-                <ProfileView
-                  user={user}
-                  token={token}
-                  movies={movies}
-                  onLoggedOut={() => {
-                    dispatch(setUser(null));
-                    dispatch(setToken(null));
-                    localStorage.clear();
-                    navigate("/login", { replace: true });
-                  }}
-                />
-              }
+            />
+            <Route
+              path="/users/:Username/favoriteMovies"
+              element={<FavoritesView user={user} />}
             />
           </Routes>
         </Row>

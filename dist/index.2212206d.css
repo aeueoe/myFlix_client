@@ -4,10 +4,470 @@
  * Copyright 2019-2024 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/icons/blob/main/LICENSE)
  */
-body {
-  color: #333;
+.navbar {
   background-color: #fff;
+  border-bottom: 1px solid #677475;
+}
+
+.navbar .nav-link {
+  color: #2c3e50;
+}
+
+.navbar .nav-link:hover {
+  color: #f39c12;
+}
+
+.navbar .navbar-collapse {
+  justify-content: flex-end;
+}
+
+.container {
+  margin-top: 10px;
+}
+
+.movie-card {
+  border: none;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
   font-family: Poppins, sans-serif;
+  transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+  overflow: hidden;
+}
+
+.movie-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px #0003;
+}
+
+.card-image-container {
+  border-bottom: 1px solid #677475;
+  height: 100%;
+  overflow: hidden;
+}
+
+.card-image-container .card-image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.card-body {
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+  display: flex;
+}
+
+.card-footer {
+  background-color: #f5f5f5;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  display: flex;
+}
+
+.card-footer .see-more {
+  cursor: pointer;
+  background-color: #f39c12;
+  border: none;
+}
+
+.card-footer .see-more:hover {
+  background-color: #c87f0a;
+}
+
+.heart-icon {
+  cursor: pointer;
+  transition: fill .2s ease-in-out;
+}
+
+.heart-icon:hover {
+  fill: #c0392b;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.ratings {
+  flex-direction: column;
+  gap: .5rem;
+  margin-top: .5rem;
+  display: flex;
+}
+
+.ratings .rating {
+  color: #677475;
+  align-items: center;
+  gap: .5rem;
+  font-size: 1rem;
+  display: flex;
+}
+
+.ratings .rating i {
+  color: #f39c12;
+}
+
+.ratings .rating .rating-value {
+  font-weight: 500;
+}
+
+.text-truncate {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.view-container {
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  box-shadow: 0 4px 8px #0000001a;
+}
+
+.view-container h2 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.view-container p {
+  color: #677475;
+  margin-bottom: 1rem;
+}
+
+.view-container p strong {
+  color: #2c3e50;
+}
+
+.view-container ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.view-container ul li {
+  margin-bottom: .2rem;
+}
+
+.view-container a {
+  color: #f39c12;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s;
+  display: block;
+}
+
+.view-container a:hover {
+  color: #c87f0a;
+}
+
+.view-container .back-link {
+  color: #f39c12;
+  margin-top: .2rem;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.view-container .back-link:hover {
+  color: #c87f0a;
+}
+
+.view-container .movie-image {
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.movie-view .movie-details {
+  flex-direction: column;
+  display: flex;
+}
+
+.movie-view .movie-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.movie-view .cast-films, .movie-view .awards {
+  margin-bottom: 1rem;
+}
+
+.movie-view .value {
+  font-weight: 600;
+}
+
+.movie-view .awards ul {
+  margin: 0;
+  padding: 0;
+}
+
+.movie-view .awards ul li {
+  margin-bottom: .5rem;
+}
+
+.genre-view .similar-movies {
+  padding: 0;
+}
+
+.director-view .director-details {
+  flex-direction: column;
+  gap: 1rem;
+  display: flex;
+}
+
+.director-view .other-films {
+  padding: 0;
+}
+
+.movies-list .search {
+  margin-bottom: 30px;
+}
+
+.movies-list .show-more {
+  color: #fff;
+  background-color: #f39c12;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.movies-list .show-more:hover {
+  background-color: #c87f0a;
+}
+
+.profile-container {
+  margin-top: 5rem;
+}
+
+.fav {
+  color: #f39c12;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .2s;
+  display: block;
+}
+
+.fav:hover {
+  color: #c87f0a;
+}
+
+.profile-form-container {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px #2c3e501a;
+}
+
+.profile-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.profile-input {
+  border: 1px solid #677475;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.profile-input:focus {
+  border-color: #f39c12;
+  box-shadow: 0 0 0 .2rem #f39c1240;
+}
+
+.profile-btn {
+  background-color: #f39c12;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  margin-top: 1rem;
+  margin-right: .5rem;
+  padding: .75rem;
+  font-weight: 600;
+}
+
+.profile-btn:hover {
+  background-color: #c87f0a;
+}
+
+.button-group {
+  justify-content: space-between;
+  display: flex;
+}
+
+.profile-error {
+  color: #c0392b;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.favorites-view {
+  padding: 2rem;
+}
+
+.favorites-view h4 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+}
+
+.favorites-view .movie-card {
+  background-color: #fff;
+  border: none;
+  border-radius: 10px;
+  height: 350px;
+  margin-bottom: 1.5rem;
+  font-family: Poppins, sans-serif;
+  transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+  overflow: hidden;
+}
+
+.favorites-view .movie-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px #0003;
+}
+
+.favorites-view .movie-card .card-image-container {
+  height: 300px;
+  overflow: hidden;
+}
+
+.favorites-view .movie-card .card-image-container .card-image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.favorites-view .movie-card .card-body {
+  flex-direction: column;
+  justify-content: space-between;
+  padding: .7rem;
+  display: flex;
+}
+
+.favorites-view .movie-card .card-footer {
+  background-color: #fff;
+  border-top: 1px solid #677475;
+  justify-content: space-between;
+  align-items: center;
+  padding: .6rem;
+  display: flex;
+}
+
+.favorites-view .movie-card .card-footer .heart-icon {
+  cursor: pointer;
+  transition: fill .2s ease-in-out;
+}
+
+.favorites-view .movie-card .card-footer .heart-icon:hover {
+  fill: #c0392b;
+}
+
+.favorites-view .movie-card .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.favorites-view .movie-card .ratings {
+  flex-direction: column;
+  gap: .25rem;
+  margin-top: .5rem;
+  display: flex;
+}
+
+.favorites-view .movie-card .ratings .rating {
+  color: #677475;
+  align-items: center;
+  gap: .25rem;
+  font-size: .8rem;
+  display: flex;
+}
+
+.favorites-view .movie-card .ratings .rating i {
+  color: #f39c12;
+}
+
+.favorites-view .movie-card .ratings .rating .rating-value {
+  font-weight: 500;
+}
+
+.auth-container {
+  margin-top: 5rem;
+}
+
+.auth-form-container {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px #2c3e501a;
+}
+
+.auth-title {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.auth-input {
+  border: 1px solid #677475;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.auth-input:focus {
+  border-color: #f39c12;
+  box-shadow: 0 0 0 .2rem #f39c1240;
+}
+
+.auth-btn {
+  background-color: #f39c12;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+  margin-top: 1rem;
+  padding: .75rem;
+  font-weight: 600;
+}
+
+.auth-btn:hover {
+  background-color: #c87f0a;
+}
+
+.auth-error {
+  color: #c0392b;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.auth-footer {
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  display: flex;
+}
+
+.auth-footer span {
+  color: #677475;
+  margin-right: .5rem;
+}
+
+.auth-footer .auth-link-btn {
+  color: #f39c12;
+  background: none;
+  border: none;
+  padding: 0;
+  font-weight: 600;
+}
+
+.auth-footer .auth-link-btn:hover {
+  color: #c87f0a;
+  background: none;
 }
 
 :root, [data-bs-theme="light"] {

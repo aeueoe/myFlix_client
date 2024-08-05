@@ -20,66 +20,67 @@ export const DirectorView = ({ token }) => {
             },
           }
         );
-        const data = await response.json();
-        setDirector(data);
+        if (response.ok) {
+          const data = await response.json();
+          setDirector(data);
+        } else {
+          console.error("Error fetching director:", response.statusText);
+        }
       } catch (error) {
         console.error("Error fetching director:", error);
       }
     })();
   }, [token, directorName]);
+
   if (!director) {
     return <div>Loading...</div>; // or a loading spinner, etc.
   }
 
   return (
-    <Container className="director-view">
-      <Row>
-        <Col md={8}>
-          <h2>{director.name}</h2>
-          <p>
-            <strong>Bio:</strong> {director.bio}
-          </p>
-          <p>
-            <strong>Birth:</strong> {director.birth}
-          </p>
-          {director.death && director.death !== "0" && (
+    <div className="view-container director-view">
+      <Container>
+        <Row>
+          <Col md={8}>
+            <h2>{director.name}</h2>
             <p>
-              <strong>Death:</strong> {director.death}
+              <strong>Bio:</strong> {director.bio}
             </p>
-          )}
-          <p>
-            <strong>Country:</strong> {director.country}
-          </p>
-          <p>
-            <strong>Other Films:</strong>
-            <ul>
-              {director.otherFilms &&
-                director.otherFilms.map((film) => <li key={film}>{film}</li>)}
-            </ul>
-          </p>
-
-          <Link
-            to="/"
-            className="mt-3 d-inline-block"
-            onClick={() => navigate(-1)}
-          >
-            Back
-          </Link>
-        </Col>
-      </Row>
-    </Container>
+            <p>
+              <strong>Birth:</strong> {director.birth}
+            </p>
+            {director.death && director.death !== "0" && (
+              <p>
+                <strong>Death:</strong> {director.death}
+              </p>
+            )}
+            <p>
+              <strong>Country:</strong> {director.country}
+            </p>
+            <p>
+              <strong>Other Films:</strong>
+              <ul className="other-films">
+                {director.otherFilms &&
+                  director.otherFilms.map((film) => <li key={film}>{film}</li>)}
+              </ul>
+            </p>
+            <hr />
+            <div>
+              <Link to="/" className="back-link" onClick={() => navigate(-1)}>
+                Back
+              </Link>
+            </div>
+            <div>
+              <Link to="/" className="back-link">
+                Home
+              </Link>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };
 
 DirectorView.propTypes = {
   token: PropTypes.string.isRequired,
-  director: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    birth: PropTypes.string.isRequired,
-    death: PropTypes.string,
-    country: PropTypes.string.isRequired,
-    bio: PropTypes.string.isRequired,
-    otherFilms: PropTypes.arrayOf(PropTypes.string).isRequired,
-  }),
 };

@@ -1,28 +1,33 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import { MovieCard } from "../movie-card/movie-card";
 
 export const FavoritesView = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
   const movies = useSelector((state) => state.movies.list);
+  const favoriteMovieIds = useSelector((state) => state.movies.favorites);
+  const navigate = useNavigate();
 
-  const favoriteMovies = movies.filter((m) => {
-    return user.favoriteMovies.includes(m.id);
-  });
+  const favoriteMovies = movies.filter((movie) =>
+    favoriteMovieIds.includes(movie.id)
+  );
+
+  const handleMovieClick = (movie) => {
+    navigate(`/movies/${movie.title}`, { state: { movie } });
+  };
 
   return (
-    <Row>
+    <Row className="favorites-view">
       <Col>
-        <h3>My Favorite Movies</h3>
+        <h4>My Favorite Movies</h4>
         <Row className="justify-content-center">
           {favoriteMovies.length === 0 ? (
             <Col>The list is empty!</Col>
           ) : (
             favoriteMovies.map((movie) => (
-              <Col className="mb-5" md={3} key={movie.id}>
-                <MovieCard movie={movie} user={user} />
+              <Col className="mb-5" xs={6} sm={4} md={3} key={movie.id}>
+                <MovieCard movie={movie} onMovieClick={handleMovieClick} />
               </Col>
             ))
           )}
@@ -31,3 +36,5 @@ export const FavoritesView = () => {
     </Row>
   );
 };
+
+export default FavoritesView;
