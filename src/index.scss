@@ -30,7 +30,7 @@ $font-family: "Poppins", sans-serif;
 }
 
 .container {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 //Movie Card//
@@ -241,7 +241,16 @@ $font-family: "Poppins", sans-serif;
 
 .movies-list {
   .search {
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
+    margin-top: 2rem;
+  }
+
+  .top-button {
+    position: fixed;
+    bottom: 1.8rem;
+    right: 1rem;
+    display: block;
+    cursor: pointer;
   }
 
   .show-more {
@@ -324,7 +333,7 @@ $font-family: "Poppins", sans-serif;
 //Favorite Movies//
 
 .favorites-view {
-  padding: 2rem;
+  margin-top: 5rem;
 
   h4 {
     font-family: $font-family;
@@ -332,6 +341,7 @@ $font-family: "Poppins", sans-serif;
     color: $color-primary;
     margin-bottom: 2rem;
     text-align: center;
+    margin-top: 2rem;
   }
 
   .movie-card {

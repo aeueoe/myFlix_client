@@ -14,7 +14,7 @@ export const MovieView = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="view-container movie-view">
+    <div className="view-container movie-view ">
       <Container>
         <Row className="justify-content-center">
           <Col md={6}>
