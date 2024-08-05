@@ -22,7 +22,7 @@
 }
 
 .container {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .movie-card {
@@ -222,7 +222,16 @@
 }
 
 .movies-list .search {
-  margin-bottom: 30px;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.movies-list .top-button {
+  cursor: pointer;
+  display: block;
+  position: fixed;
+  bottom: 1.8rem;
+  right: 1rem;
 }
 
 .movies-list .show-more {
@@ -279,7 +288,6 @@
 }
 
 .profile-btn {
-  background-color: #f39c12;
   border: none;
   border-radius: 5px;
   width: 100%;
@@ -287,10 +295,6 @@
   margin-right: .5rem;
   padding: .75rem;
   font-weight: 600;
-}
-
-.profile-btn:hover {
-  background-color: #c87f0a;
 }
 
 .button-group {
@@ -305,12 +309,13 @@
 }
 
 .favorites-view {
-  padding: 2rem;
+  margin-top: 5rem;
 }
 
 .favorites-view h4 {
   color: #2c3e50;
   text-align: center;
+  margin-top: 2rem;
   margin-bottom: 2rem;
   font-family: Poppins, sans-serif;
   font-weight: 700;
