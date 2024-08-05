@@ -40,7 +40,7 @@ export const LoginView = ({ onLoggedIn }) => {
           dispatch(setUserProfile(data.user));
           dispatch(setToken(data.token));
           onLoggedIn(data.user, data.token);
-          navigate("/home");
+          navigate("/");
           window.location.reload();
         } else {
           throw new Error("Invalid response data");
