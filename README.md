@@ -8,7 +8,7 @@ Myflix provides users with access to information about different movies, directo
 Users can sign up, log in, update their account information and manage a list of their fav movies.
 This project was built with the MERN (MongoDB, Express, React, and Node.js) stack.
 
-Website [here](https:).
+Website [here](https://myflix-morefilms.netlify.app/).
 
 ## Project requirements
 
@@ -37,10 +37,10 @@ data in a non-relational way. I used Postman for endpoint testing and Mongoose f
 ## Used
 
 The following technologies are used:
-MongoDB
-Express
-React
-Node.js
-React Redux
-React Bootstrap
+MongoDB,
+Express,
+React,
+Node.js,
+React Redux,
+React Bootstrap,
 Parcel
