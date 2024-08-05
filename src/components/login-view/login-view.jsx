@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Form, Button, Container, Row } from "react-bootstrap";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { setUser, setToken } from "../../redux/reducer/user";
+import { setUserProfile, setToken } from "../../redux/reducer/user";
 
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState("");
@@ -34,17 +34,14 @@ export const LoginView = ({ onLoggedIn }) => {
         return response.json();
       })
       .then((data) => {
-        // Log the response data to see its structure
-        console.log("API response:", data);
-
-        // Check if the expected fields are present in the response
         if (data.user && data.token) {
           localStorage.setItem("user", JSON.stringify(data.user));
           localStorage.setItem("token", data.token);
-          dispatch(setUser(data.user));
+          dispatch(setUserProfile(data.user));
           dispatch(setToken(data.token));
           onLoggedIn(data.user, data.token);
           navigate("/movies");
+          window.location.reload();
         } else {
           throw new Error("Invalid response data");
         }
@@ -56,47 +53,56 @@ export const LoginView = ({ onLoggedIn }) => {
   };
 
   return (
-    <Container className="login-section mb-4 p-4">
+    <Container className="auth-container">
       <Row className="justify-content-center">
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formUsername">
-            <Form.Label>Username:</Form.Label>
-            <Form.Control
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              minLength={5}
-              required
-            />
-          </Form.Group>
+        <div
+          className="text-center mb-4"
+          style={{ fontSize: "34px", fontWeight: "bold", color: "#f39c12" }}
+        >
+          myFlix
+        </div>
 
-          <Form.Group controlId="formPassword">
-            <Form.Label>Password:</Form.Label>
-            <Form.Control
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              minLength={6}
-              required
-            />
-          </Form.Group>
-          <Button className="submit-btn" type="submit" variant="primary">
-            Login
-          </Button>
-          {error && (
-            <div className="error" style={{ color: "red" }}>
-              {error}
+        <Col md={6} className="auth-form-container">
+          <h2 className="auth-title">Login</h2>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                minLength={5}
+                required
+                className="auth-input"
+              />
+            </Form.Group>
+            <Form.Group controlId="formPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                minLength={6}
+                required
+                className="auth-input"
+              />
+            </Form.Group>
+            <Button type="submit" className="auth-btn" variant="primary">
+              Login
+            </Button>
+            {error && <div className="auth-error">{error}</div>}
+            <div className="auth-footer">
+              <span>New here?</span>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/signup")}
+                className="auth-link-btn"
+              >
+                Signup
+              </Button>
             </div>
-          )}
-          <div>New here? Sign up now!</div>
-          <Button
-            className="submit-btn"
-            variant="outline-primary"
-            onClick={() => navigate("/signup")}
-          >
-            Signup
-          </Button>
-        </Form>
+          </Form>
+        </Col>
       </Row>
     </Container>
   );
