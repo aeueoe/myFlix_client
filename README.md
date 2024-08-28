@@ -4,7 +4,7 @@
 
 ## About
 
-Myflix provides users with access to information about different movies, directors, and genres.
+Myflix provides users with information about different movies, directors, and genres.
 Users can sign up, log in, update their account information and manage a list of their fav movies.
 This project was built with the MERN (MongoDB, Express, React, and Node.js) stack.
 
@@ -20,13 +20,13 @@ The project brief extracted several mandatory functions from the user stories th
 4. Return data about a director (bio, birth year, death year) by name
 5. Allow new users to register
 6. Allow users to update their user info (username, password, email, date of birth)
-7. Allow users to add a movie to their list of favorites
-8. Allow users to remove a movie from their list of favorites
+7. Allow users to add a movie to their list of favourites
+8. Allow users to remove a movie from their list of favourites
 9. Allow existing users to deregister
 
 The **server side** of the web application consists of a REST API and a database built with JavaScript, Node.js, Express, and MongoDB. The
 REST API can be accessed via commonly used HTTP methods like GET, PUT, POST and DELETE. CRUD methods are used to retrieve data from the database and store that
-data in a non-relational way. I used Postman for endpoint testing and Mongoose for the business layer logic. The database was built with MongoDB; the final project is hosted on Heroku.
+data in a non-relational way. I used Postman for endpoint testing and Mongoose for the business layer logic. The database was built with MongoDB.
 
 ![Fav](./img/fav.png)
 
